@@ -1,0 +1,5 @@
+console.log("Hello word")
+console.log(__dirname)
+console.log(__filename)
+console.log("-----------")
+const {foo} = require('./www/helper.js')
