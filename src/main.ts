@@ -1,14 +1,16 @@
-const express = require('express');
-const {reader, writer} = require('./fs.service');
+import express, { Request, Response } from "express";
+import {reader, writer} from './fs.service';
+
+import { IUser } from "./user.interface";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response) => {
     res.send("Hello")
 })
-app.get('/users', async (req, res) => {
+app.get('/users', async (req: Request, res: Response) => {
     try {
         const users = await reader();
         res.json(users);
@@ -17,13 +19,13 @@ app.get('/users', async (req, res) => {
     }
 });
 
-app.post('/users', async (req, res) => {
+app.post('/users', async (req: Request, res: Response) => {
     try {
         const {name, email, password} = req.body;
 
         const users = await reader();
 
-        const newUser = {id: users[users.length - 1].id + 1, name, email, password}
+        const newUser: IUser = {id: users[users.length - 1].id + 1, name, email, password}
         users.push(newUser);
         await writer(users);
         res.status(201).json(newUser);
@@ -32,7 +34,7 @@ app.post('/users', async (req, res) => {
     }
 })
 
-app.get('/users/:userId', async (req, res) => {
+app.get('/users/:userId', async (req: Request, res: Response) => {
     try {
         const userId = Number(req.params.userId);
         const users = await reader();
@@ -47,7 +49,7 @@ app.get('/users/:userId', async (req, res) => {
     }
 })
 
-app.put('/users/:userId', async (req, res) => {
+app.put('/users/:userId', async (req: Request, res: Response) => {
     try {
         const {name, email, password} = req.body;
         const userId = Number(req.params.userId);
@@ -66,7 +68,7 @@ app.put('/users/:userId', async (req, res) => {
     }
 })
 
-app.delete('/users/:userId', async (req, res) => {
+app.delete('/users/:userId', async (req: Request, res: Response) => {
     try {
         const userId = Number(req.params.userId);
         const users = await reader();
