@@ -1,5 +1,6 @@
-const express = require('express');
-const {reader, writer} = require('./fs.service');
+import express, { NextFunction, Request, Response } from "express";
+import { reader, writer } from "./fs.service";
+import {ApiError} from "./api-error";
 
 const app = express();
 app.use(express.json());
@@ -8,16 +9,16 @@ app.use(express.urlencoded({extended: true}));
 app.get('/', (req, res) => {
     res.send("Hello")
 })
-app.get('/users', async (req, res) => {
+app.get('/users', async (req:Request, res:Response) => {
     try {
         const users = await reader();
         res.json(users);
-    } catch (e) {
+    } catch (e:any) {
         res.status(400).json(e.message)
     }
 });
 
-app.post('/users', async (req, res) => {
+app.post('/users', async (req:Request, res:Response) => {
     try {
         const {name, email, password} = req.body;
 
@@ -27,27 +28,27 @@ app.post('/users', async (req, res) => {
         users.push(newUser);
         await writer(users);
         res.status(201).json(newUser);
-    } catch (e) {
+    } catch (e:any) {
         res.status(400).json(e.message)
     }
 })
 
-app.get('/users/:userId', async (req, res) => {
+app.get('/users/:userId', async (req:Request, res:Response, next: NextFunction) => {
     try {
         const userId = Number(req.params.userId);
         const users = await reader();
 
         const user = users.find((user) => user.id === userId);
         if (!user) {
-            throw new Error('user not found');
+            throw new ApiError('user not found', 404);
         }
         res.json(user);
     } catch (e) {
-        res.status(400).json(e.message)
+        next(e)
     }
 })
 
-app.put('/users/:userId', async (req, res) => {
+app.put('/users/:userId', async (req:Request, res:Response, next: NextFunction) => {
     try {
         const {name, email, password} = req.body;
         const userId = Number(req.params.userId);
@@ -55,33 +56,43 @@ app.put('/users/:userId', async (req, res) => {
 
         const index = users.findIndex((user) => user.id === userId);
         if (index === -1) {
-            throw new Error('user not found');
+            throw new ApiError('user not found', 404);
         }
         users[index] = {...users[index], name, email, password}
         await writer(users);
 
         res.status(201).json(users[index]);
-    } catch (e) {
-        res.status(400).json(e.message)
+    } catch (e:any) {
+        next(e)
     }
 })
 
-app.delete('/users/:userId', async (req, res) => {
+app.delete('/users/:userId', async (req:Request, res:Response, next: NextFunction) => {
     try {
         const userId = Number(req.params.userId);
         const users = await reader();
 
         const index = users.findIndex((user) => user.id === userId);
         if (index === -1) {
-            throw new Error('user not found');
+            throw new ApiError('user not found', 404);
         }
         users.splice(index, 1);
         await writer(users);
         res.sendStatus(204);
-    } catch (e) {
-        res.status(400).json(e.message)
+    } catch (e:any) {
+        next(e)
     }
 })
+
+app.use("*", (err: ApiError, req:Request, res:Response, next: NextFunction) => {
+    return res.status(err.status || 500).json(err.message)
+}
+);
+
+process.on("uncaughtException", (error) => {
+    console.error("uncaughtException: ", error);
+    process.exit(1);
+});
 
 const PORT = 3000;
 app.listen(PORT, '127.0.0.1', () => {
