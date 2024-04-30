@@ -7,10 +7,6 @@ class UserService {
     async getList() {
         return await user_repository_1.userRepository.getList();
     }
-    async create(dto) {
-        await this.isEmailExist(dto.email);
-        return await user_repository_1.userRepository.create(dto);
-    }
     async getById(userId) {
         return await this.findUserOrThrow(userId);
     }
@@ -21,12 +17,6 @@ class UserService {
     async deleteById(userId) {
         await this.findUserOrThrow(userId);
         return await user_repository_1.userRepository.deleteById(userId);
-    }
-    async isEmailExist(email) {
-        const user = await user_repository_1.userRepository.getByParams({ email });
-        if (user) {
-            throw new api_error_1.ApiError("email already exist", 409);
-        }
     }
     async findUserOrThrow(userId) {
         const user = await user_repository_1.userRepository.getById(userId);

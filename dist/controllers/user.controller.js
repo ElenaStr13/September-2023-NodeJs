@@ -12,16 +12,6 @@ class UserController {
             next(e);
         }
     }
-    async create(req, res, next) {
-        try {
-            const dto = req.body;
-            const newUser = await user_service_1.userService.create(dto);
-            res.status(201).json(newUser);
-        }
-        catch (e) {
-            next(e);
-        }
-    }
     async getById(req, res, next) {
         try {
             const userId = req.params.userId;
