@@ -16,6 +16,12 @@ class UserService {
         return await this.findUserOrThrow(userId);
     }
 
+    public async deleteById(userId: string): Promise<void> {
+        await this.findUserOrThrow(userId);
+        return await userRepository.deleteById(userId);
+    }
+
+
     public async updateMe(userId: string, dto: Partial<IUser>): Promise<IUser> {
         await this.findUserOrThrow(userId);
         return await userRepository.updateById(userId, dto);
@@ -24,6 +30,7 @@ class UserService {
       public async deleteMe(userId: string): Promise<void> {
         await this.findUserOrThrow(userId);
         await userRepository.updateById(userId, { isDeleted: true });
+        await userRepository.deleteById(userId)
     }
 
     private async findUserOrThrow(userId: string): Promise<IUser> {

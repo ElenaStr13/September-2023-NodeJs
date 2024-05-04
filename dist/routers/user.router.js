@@ -12,4 +12,5 @@ router.get("/me", auth_middleware_1.authMiddleware.checkAccessToken, user_contro
 router.put("/me", auth_middleware_1.authMiddleware.checkAccessToken, common_middleware_1.commonMiddleware.isBodyValid(user_validator_1.UserValidator.update), user_controller_1.userController.updateMe);
 router.delete("/me", auth_middleware_1.authMiddleware.checkAccessToken, user_controller_1.userController.deleteMe);
 router.get("/:userId", common_middleware_1.commonMiddleware.isIdValid, user_controller_1.userController.getById);
+router.delete("/:userId", common_middleware_1.commonMiddleware.isIdValid, user_controller_1.userController.deleteById);
 exports.userRouter = router;

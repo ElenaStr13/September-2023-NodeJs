@@ -20,4 +20,10 @@ router.delete("/me", authMiddleware.checkAccessToken, userController.deleteMe);
 
 router.get("/:userId", commonMiddleware.isIdValid, userController.getById);
 
+router.delete(
+    "/:userId",
+    commonMiddleware.isIdValid,
+    userController.deleteById,
+);
+
 export const userRouter = router;

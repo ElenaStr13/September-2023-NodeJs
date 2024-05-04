@@ -34,7 +34,7 @@ class UserController {
         }
     }
 
-    public async updateMe(req: Request, res: Response, next: NextFunction) {
+     public async updateMe(req: Request, res: Response, next: NextFunction) {
         try {
             const jwtPayload = req.res.locals.jwtPayload as IJWTPayload;
             const dto = req.body as Partial<IUser>;
@@ -55,6 +55,17 @@ class UserController {
             next(e);
         }
     }
+    public async deleteById(req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = req.params.userId;
+            await userService.deleteById(userId);
+            res.sendStatus(204);
+        } catch (e) {
+            next(e);
+        }
+    }
 }
+
+
 
 export const userController = new UserController();

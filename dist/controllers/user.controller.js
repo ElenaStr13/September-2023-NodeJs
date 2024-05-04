@@ -53,5 +53,15 @@ class UserController {
             next(e);
         }
     }
+    async deleteById(req, res, next) {
+        try {
+            const userId = req.params.userId;
+            await user_service_1.userService.deleteById(userId);
+            res.sendStatus(204);
+        }
+        catch (e) {
+            next(e);
+        }
+    }
 }
 exports.userController = new UserController();
