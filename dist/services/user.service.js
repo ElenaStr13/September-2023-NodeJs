@@ -10,13 +10,16 @@ class UserService {
     async getById(userId) {
         return await this.findUserOrThrow(userId);
     }
-    async updateById(userId, dto) {
+    async getMe(userId) {
+        return await this.findUserOrThrow(userId);
+    }
+    async updateMe(userId, dto) {
         await this.findUserOrThrow(userId);
         return await user_repository_1.userRepository.updateById(userId, dto);
     }
-    async deleteById(userId) {
+    async deleteMe(userId) {
         await this.findUserOrThrow(userId);
-        return await user_repository_1.userRepository.deleteById(userId);
+        await user_repository_1.userRepository.updateById(userId, { isDeleted: true });
     }
     async findUserOrThrow(userId) {
         const user = await user_repository_1.userRepository.getById(userId);

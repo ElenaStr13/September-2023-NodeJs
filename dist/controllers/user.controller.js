@@ -22,21 +22,31 @@ class UserController {
             next(e);
         }
     }
-    async updateById(req, res, next) {
+    async getMe(req, res, next) {
         try {
-            const userId = req.params.userId;
+            const jwtPayload = req.res.locals.jwtPayload;
+            const user = await user_service_1.userService.getMe(jwtPayload.userId);
+            res.json(user);
+        }
+        catch (e) {
+            next(e);
+        }
+    }
+    async updateMe(req, res, next) {
+        try {
+            const jwtPayload = req.res.locals.jwtPayload;
             const dto = req.body;
-            const user = await user_service_1.userService.updateById(userId, dto);
+            const user = await user_service_1.userService.updateMe(jwtPayload.userId, dto);
             res.status(201).json(user);
         }
         catch (e) {
             next(e);
         }
     }
-    async deleteById(req, res, next) {
+    async deleteMe(req, res, next) {
         try {
-            const userId = req.params.userId;
-            await user_service_1.userService.deleteById(userId);
+            const jwtPayload = req.res.locals.jwtPayload;
+            await user_service_1.userService.deleteMe(jwtPayload.userId);
             res.sendStatus(204);
         }
         catch (e) {
