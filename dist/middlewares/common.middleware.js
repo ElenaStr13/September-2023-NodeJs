@@ -3,12 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.commonMiddleware = void 0;
 const mongoose_1 = require("mongoose");
 const api_error_1 = require("../errors/api-error");
+const status_codes_constant_1 = require("../constants/status-codes.constant");
 class CommonMiddleware {
     isIdValid(req, res, next) {
         try {
             const id = req.params.userId;
             if (!(0, mongoose_1.isObjectIdOrHexString)(id)) {
-                throw new api_error_1.ApiError("Invalid id", 400);
+                throw new api_error_1.ApiError("Invalid id", status_codes_constant_1.statusCodes.BAD_REQUEST);
             }
             next();
         }

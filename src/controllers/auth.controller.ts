@@ -1,10 +1,10 @@
-
 import { NextFunction, Request, Response } from "express";
 
 import { IJWTPayload } from "../interfaces/jwt-payload.interface";
 import { IToken } from "../interfaces/token.interface";
 import { IUser } from "../interfaces/user.interface";
 import { authService } from "../services/auth.service";
+import {AuthPresenter} from "../presenters/auth.presenter";
 
 class AuthController {
     public async signUp(req: Request, res: Response, next: NextFunction) {
@@ -21,7 +21,8 @@ class AuthController {
         try {
             const dto = req.body as { email: string; password: string };
             const data = await authService.signIn(dto);
-            res.status(201).json(data);
+            const response = AuthPresenter.toResponseDto(data);
+            res.status(201).json(response);
         } catch (e) {
             next(e);
         }

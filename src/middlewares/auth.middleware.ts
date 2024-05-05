@@ -4,6 +4,7 @@ import { TokenTypeEnum } from "../enums/token-type.enum";
 import { ApiError } from "../errors/api-error";
 import { tokenRepository } from "../repositories/token.repository";
 import { tokenService } from "../services/token.service";
+import {statusCodes} from "../constants/status-codes.constant";
 
 class AuthMiddleware {
     public async checkAccessToken(
@@ -14,7 +15,7 @@ class AuthMiddleware {
         try {
             const accessToken = req.get("Authorization");
             if (!accessToken) {
-                throw new ApiError("No token provided", 401);
+                throw new ApiError("No token provided", statusCodes.UNAUTHORIZED);
             }
             const payload = tokenService.checkToken(
                 accessToken,
@@ -23,7 +24,7 @@ class AuthMiddleware {
 
             const tokenPair = await tokenRepository.findByParams({ accessToken });
             if (!tokenPair) {
-                throw new ApiError("Invalid token", 401);
+                throw new ApiError("Invalid token", statusCodes.UNAUTHORIZED);
             }
             req.res.locals.jwtPayload = payload;
             next();
@@ -40,7 +41,7 @@ class AuthMiddleware {
         try {
             const refreshToken = req.get("Authorization");
             if (!refreshToken) {
-                throw new ApiError("No token provided", 401);
+                throw new ApiError("No token provided", statusCodes.UNAUTHORIZED);
             }
             const payload = tokenService.checkToken(
                 refreshToken,
@@ -49,7 +50,7 @@ class AuthMiddleware {
 
             const tokenPair = await tokenRepository.findByParams({ refreshToken });
             if (!tokenPair) {
-                throw new ApiError("Invalid token", 401);
+                throw new ApiError("Invalid token", statusCodes.UNAUTHORIZED);
             }
             req.res.locals.jwtPayload = payload;
             req.res.locals.tokenPair = tokenPair;

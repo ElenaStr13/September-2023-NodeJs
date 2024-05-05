@@ -28,6 +28,7 @@ const jsonwebtoken = __importStar(require("jsonwebtoken"));
 const config_1 = require("../configs/config");
 const token_type_enum_1 = require("../enums/token-type.enum");
 const api_error_1 = require("../errors/api-error");
+const status_codes_constant_1 = require("../constants/status-codes.constant");
 class TokenService {
     generatePair(payload) {
         const accessToken = jsonwebtoken.sign(payload, config_1.config.JWT_ACCESS_SECRET, {
@@ -54,12 +55,12 @@ class TokenService {
                     secret = config_1.config.JWT_REFRESH_SECRET;
                     break;
                 default:
-                    throw new api_error_1.ApiError("Invalid token type", 401);
+                    throw new api_error_1.ApiError("Invalid token type", status_codes_constant_1.statusCodes.UNAUTHORIZED);
             }
             return jsonwebtoken.verify(token, secret);
         }
         catch (error) {
-            throw new api_error_1.ApiError("Token is not valid", 401);
+            throw new api_error_1.ApiError("Token is not valid", status_codes_constant_1.statusCodes.UNAUTHORIZED);
         }
     }
 }

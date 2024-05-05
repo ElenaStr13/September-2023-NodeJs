@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authController = void 0;
 const auth_service_1 = require("../services/auth.service");
+const auth_presenter_1 = require("../presenters/auth.presenter");
 class AuthController {
     async signUp(req, res, next) {
         try {
@@ -17,7 +18,8 @@ class AuthController {
         try {
             const dto = req.body;
             const data = await auth_service_1.authService.signIn(dto);
-            res.status(201).json(data);
+            const response = auth_presenter_1.AuthPresenter.toResponseDto(data);
+            res.status(201).json(response);
         }
         catch (e) {
             next(e);

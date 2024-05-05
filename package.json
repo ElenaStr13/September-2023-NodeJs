@@ -19,7 +19,8 @@
     "express": "^4.19.2",
     "joi": "^17.13.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.3.2"
+    "mongoose": "^8.3.2",
+    "twilio": "^5.0.4"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

@@ -9,6 +9,9 @@ const token_service_1 = require("./token.service");
 const send_grid_service_1 = require("./send-grid.service");
 const config_1 = require("../configs/config");
 const email_type_enum_1 = require("../enums/email-type.enum");
+const error_messages_constant_1 = require("../constants/error-messages.constant");
+const status_codes_constant_1 = require("../constants/status-codes.constant");
+const sms_service_1 = require("./sms.service");
 class AuthService {
     async signUp(dto) {
         await this.isEmailExist(dto.email);
@@ -31,16 +34,17 @@ class AuthService {
             frontUrl: config_1.config.FRONT_URL,
             actionToken: "actionToken",
         });
+        await sms_service_1.smsService.sendSms(user.phone, "<NAME>! Welcome to our app");
         return { user, tokens };
     }
     async signIn(dto) {
         const user = await user_repository_1.userRepository.getByParams({ email: dto.email });
         if (!user) {
-            throw new api_error_1.ApiError("Wrong email or password", 401);
+            throw new api_error_1.ApiError(error_messages_constant_1.errorMessages.WRONG_EMAIL_OR_PASSWORD, status_codes_constant_1.statusCodes.UNAUTHORIZED);
         }
         const isCompare = await password_service_1.passwordService.comparePassword(dto.password, user.password);
         if (!isCompare) {
-            throw new api_error_1.ApiError("Wrong email or password", 401);
+            throw new api_error_1.ApiError(error_messages_constant_1.errorMessages.WRONG_EMAIL_OR_PASSWORD, status_codes_constant_1.statusCodes.UNAUTHORIZED);
         }
         const tokens = token_service_1.tokenService.generatePair({
             userId: user._id,
@@ -68,7 +72,7 @@ class AuthService {
     async isEmailExist(email) {
         const user = await user_repository_1.userRepository.getByParams({ email });
         if (user) {
-            throw new api_error_1.ApiError("email already exist", 409);
+            throw new api_error_1.ApiError(error_messages_constant_1.errorMessages.EMAIL_ALREADY_EXIST, status_codes_constant_1.statusCodes.CONFLICT);
         }
     }
 }

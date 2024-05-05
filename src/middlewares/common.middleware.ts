@@ -3,13 +3,14 @@ import { ObjectSchema } from "joi";
 import { isObjectIdOrHexString } from "mongoose";
 
 import { ApiError } from "../errors/api-error";
+import {statusCodes} from "../constants/status-codes.constant";
 
 class CommonMiddleware {
     public isIdValid(req: Request, res: Response, next: NextFunction) {
         try {
             const id = req.params.userId;
             if (!isObjectIdOrHexString(id)) {
-                throw new ApiError("Invalid id", 400);
+                throw new ApiError("Invalid id", statusCodes.BAD_REQUEST);
             }
             next();
         } catch (e) {

@@ -24,7 +24,6 @@ class UserService {
     async deleteMe(userId) {
         await this.findUserOrThrow(userId);
         await user_repository_1.userRepository.updateById(userId, { isDeleted: true });
-        await user_repository_1.userRepository.deleteById(userId);
     }
     async findUserOrThrow(userId) {
         const user = await user_repository_1.userRepository.getById(userId);

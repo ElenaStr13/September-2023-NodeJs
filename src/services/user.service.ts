@@ -28,9 +28,9 @@ class UserService {
     }
 
       public async deleteMe(userId: string): Promise<void> {
-        await this.findUserOrThrow(userId);
+         await this.findUserOrThrow(userId);
         await userRepository.updateById(userId, { isDeleted: true });
-        await userRepository.deleteById(userId)
+         // await smsPrepareService.deleteAccount(user.phone, {name: user.name});
     }
 
     private async findUserOrThrow(userId: string): Promise<IUser> {
