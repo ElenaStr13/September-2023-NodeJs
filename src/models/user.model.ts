@@ -19,5 +19,4 @@ const userSchema = new mongoose.Schema(
         versionKey: false,
     },
 );
-
 export const User = mongoose.model<IUser>("users", userSchema);
