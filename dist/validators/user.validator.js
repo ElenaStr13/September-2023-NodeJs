@@ -32,5 +32,9 @@ class UserValidator {
         phone: this.phone,
         age: this.age,
     });
+    static login = joi_1.default.object({
+        email: this.email.required(),
+        password: this.password.required(),
+    });
 }
 exports.UserValidator = UserValidator;

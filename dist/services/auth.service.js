@@ -36,6 +36,18 @@ class AuthService {
         }
         return user;
     }
+    async refresh(jwtPayload, oldPair) {
+        const newPair = token_service_1.tokenService.generatePair({
+            userId: jwtPayload.userId,
+            role: jwtPayload.role,
+        });
+        await token_repository_1.tokenRepository.deleteById(oldPair._userId);
+        await token_repository_1.tokenRepository.create({
+            ...newPair,
+            _userId: jwtPayload.userId,
+        });
+        return newPair;
+    }
     async isEmailExist(email) {
         const user = await user_repository_1.userRepository.getByParams({ email });
         if (user) {

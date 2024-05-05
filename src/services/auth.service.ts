@@ -1,10 +1,11 @@
 import { ApiError } from "../errors/api-error";
-import { ITokenResponse } from "../interfaces/token.interface";
+import {IToken, ITokenResponse} from "../interfaces/token.interface";
 import { IUser } from "../interfaces/user.interface";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
 import { passwordService } from "./password.service";
 import { tokenService } from "./token.service";
+import {IJWTPayload} from "../interfaces/jwt-payload.interface";
 
 class AuthService {
     public async signUp(
@@ -46,6 +47,24 @@ class AuthService {
         }
         return user;
     }
+
+    public async refresh(
+        jwtPayload: IJWTPayload,
+        oldPair: IToken,
+    ): Promise<ITokenResponse> {
+        const newPair = tokenService.generatePair({
+            userId: jwtPayload.userId,
+            role: jwtPayload.role,
+        });
+
+        await tokenRepository.deleteById(oldPair._userId);
+        await tokenRepository.create({
+            ...newPair,
+            _userId: jwtPayload.userId,
+        });
+        return newPair;
+    }
+
 
     private async isEmailExist(email: string): Promise<void> {
         const user = await userRepository.getByParams({ email });

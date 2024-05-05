@@ -9,5 +9,8 @@ class TokenRepository {
     async findByParams(params) {
         return await token_model_1.Token.findOne(params);
     }
+    async deleteById(id) {
+        await token_model_1.Token.deleteOne({ _id: id });
+    }
 }
 exports.tokenRepository = new TokenRepository();
