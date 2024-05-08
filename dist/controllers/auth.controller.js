@@ -36,5 +36,15 @@ class AuthController {
             next(e);
         }
     }
+    async forgotPassword(req, res, next) {
+        try {
+            const body = req.body;
+            await auth_service_1.authService.forgotPassword(body);
+            res.sendStatus(204);
+        }
+        catch (e) {
+            next(e);
+        }
+    }
 }
 exports.authController = new AuthController();

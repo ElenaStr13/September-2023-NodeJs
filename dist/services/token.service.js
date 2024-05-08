@@ -29,6 +29,7 @@ const config_1 = require("../configs/config");
 const token_type_enum_1 = require("../enums/token-type.enum");
 const api_error_1 = require("../errors/api-error");
 const status_codes_constant_1 = require("../constants/status-codes.constant");
+const action_token_type_enum_1 = require("../enums/action-token-type.enum");
 class TokenService {
     generatePair(payload) {
         const accessToken = jsonwebtoken.sign(payload, config_1.config.JWT_ACCESS_SECRET, {
@@ -43,6 +44,19 @@ class TokenService {
             refreshToken,
             refreshExpiresIn: config_1.config.JWT_REFRESH_EXPIRES_IN,
         };
+    }
+    generateActionToken(payload, type) {
+        let secret;
+        let expiresIn;
+        switch (type) {
+            case action_token_type_enum_1.ActionTokenTypeEnum.FORGOT:
+                secret = config_1.config.JWT_ACTION_FORGOT_TOKEN_SECRET;
+                expiresIn = config_1.config.JWT_ACTION_FORGOT_EXPIRES_IN;
+                break;
+            default:
+                throw new api_error_1.ApiError("Invalid token type", status_codes_constant_1.statusCodes.INTERNAL_SERVER_ERROR);
+        }
+        return jsonwebtoken.sign(payload, secret, { expiresIn });
     }
     checkToken(token, type) {
         try {

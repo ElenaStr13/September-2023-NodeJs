@@ -5,6 +5,7 @@ import { IToken } from "../interfaces/token.interface";
 import { IUser } from "../interfaces/user.interface";
 import { authService } from "../services/auth.service";
 import {AuthPresenter} from "../presenters/auth.presenter";
+import {IForgot} from "../interfaces/action-token.interface";
 
 class AuthController {
     public async signUp(req: Request, res: Response, next: NextFunction) {
@@ -35,6 +36,16 @@ class AuthController {
 
             const data = await authService.refresh(jwtPayload, tokenPair);
             res.status(201).json(data);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    public async forgotPassword(req: Request, res: Response, next: NextFunction) {
+        try {
+            const body = req.body as IForgot;
+            await authService.forgotPassword(body);
+            res.sendStatus(204);
         } catch (e) {
             next(e);
         }

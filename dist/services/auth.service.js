@@ -12,6 +12,7 @@ const email_type_enum_1 = require("../enums/email-type.enum");
 const error_messages_constant_1 = require("../constants/error-messages.constant");
 const status_codes_constant_1 = require("../constants/status-codes.constant");
 const sms_service_1 = require("./sms.service");
+const action_token_type_enum_1 = require("../enums/action-token-type.enum");
 class AuthService {
     async signUp(dto) {
         await this.isEmailExist(dto.email);
@@ -68,6 +69,16 @@ class AuthService {
             _userId: jwtPayload.userId,
         });
         return newPair;
+    }
+    async forgotPassword(dto) {
+        const user = await user_repository_1.userRepository.getByParams({ email: dto.email });
+        if (!user)
+            return;
+        const actionToken = token_service_1.tokenService.generateActionToken({ userId: user._id, role: user.role }, action_token_type_enum_1.ActionTokenTypeEnum.FORGOT);
+        await send_grid_service_1.sendGridService.sendByType(user.email, email_type_enum_1.EmailTypeEnum.RESET_PASSWORD, {
+            frontUrl: config_1.config.FRONT_URL,
+            actionToken,
+        });
     }
     async isEmailExist(email) {
         const user = await user_repository_1.userRepository.getByParams({ email });

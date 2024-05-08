@@ -12,6 +12,8 @@ import {EmailTypeEnum} from "../enums/email-type.enum";
 import {errorMessages} from "../constants/error-messages.constant";
 import {statusCodes} from "../constants/status-codes.constant";
 import {smsService} from "./sms.service";
+import {ActionTokenTypeEnum} from "../enums/action-token-type.enum";
+import {IForgot} from "../interfaces/action-token.interface";
 
 
 
@@ -93,6 +95,25 @@ class AuthService {
             _userId: jwtPayload.userId,
         });
         return newPair;
+    }
+
+    public async forgotPassword(dto: IForgot): Promise<void> {
+        const user = await userRepository.getByParams({ email: dto.email });
+        if (!user) return;
+
+        const actionToken = tokenService.generateActionToken(
+            { userId: user._id, role: user.role },
+            ActionTokenTypeEnum.FORGOT,
+        );
+        // await actionTokenRepository.create({
+        //     tokenType: ActionTokenTypeEnum.FORGOT,
+        //     actionToken,
+        //     _userId: user._id,
+        // });
+        await sendGridService.sendByType(user.email, EmailTypeEnum.RESET_PASSWORD, {
+            frontUrl: config.FRONT_URL,
+            actionToken,
+        });
     }
 
     private async isEmailExist(email: string): Promise<void> {

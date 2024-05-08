@@ -10,4 +10,5 @@ const router = (0, express_1.Router)();
 router.post("/sign-up", common_middleware_1.commonMiddleware.isBodyValid(user_validator_1.UserValidator.create), auth_controller_1.authController.signUp);
 router.post("/sign-in", common_middleware_1.commonMiddleware.isBodyValid(user_validator_1.UserValidator.login), auth_controller_1.authController.signIn);
 router.post("/refresh", auth_middleware_1.authMiddleware.checkRefreshToken, auth_controller_1.authController.refresh);
+router.post("/forgot-password", auth_controller_1.authController.forgotPassword);
 exports.authRouter = router;
