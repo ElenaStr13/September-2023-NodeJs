@@ -12,6 +12,7 @@ const email_type_enum_1 = require("../enums/email-type.enum");
 const error_messages_constant_1 = require("../constants/error-messages.constant");
 const status_codes_constant_1 = require("../constants/status-codes.constant");
 const action_token_type_enum_1 = require("../enums/action-token-type.enum");
+const action_token_repository_1 = require("../repositories/action-token.repository");
 class AuthService {
     async signUp(dto) {
         await this.isEmailExist(dto.email);
@@ -73,10 +74,24 @@ class AuthService {
         if (!user)
             return;
         const actionToken = token_service_1.tokenService.generateActionToken({ userId: user._id, role: user.role }, action_token_type_enum_1.ActionTokenTypeEnum.FORGOT);
+        await action_token_repository_1.actionTokenRepository.create({
+            tokenType: action_token_type_enum_1.ActionTokenTypeEnum.FORGOT,
+            actionToken,
+            _userId: user._id,
+        });
         await send_grid_service_1.sendGridService.sendByType(user.email, email_type_enum_1.EmailTypeEnum.RESET_PASSWORD, {
             frontUrl: config_1.config.FRONT_URL,
             actionToken,
         });
+    }
+    async setForgotPassword(dto, jwtPayload) {
+        const user = await user_repository_1.userRepository.getById(jwtPayload.userId);
+        const hashedPassword = await password_service_1.passwordService.hashPassword(dto.password);
+        await user_repository_1.userRepository.updateById(user._id, { password: hashedPassword });
+        await action_token_repository_1.actionTokenRepository.deleteByParams({
+            tokenType: action_token_type_enum_1.ActionTokenTypeEnum.FORGOT,
+        });
+        await token_repository_1.tokenRepository.deleteByParams({ _userId: user._id });
     }
     async isEmailExist(email) {
         const user = await user_repository_1.userRepository.getByParams({ email });

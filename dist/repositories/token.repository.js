@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.tokenRepository = void 0;
 const token_model_1 = require("../models/token.model");
+const action_token_model_1 = require("../models/action-token.model");
 class TokenRepository {
     async create(dto) {
         return await token_model_1.Token.create(dto);
@@ -11,6 +12,9 @@ class TokenRepository {
     }
     async deleteById(id) {
         await token_model_1.Token.deleteOne({ _id: id });
+    }
+    async deleteByParams(params) {
+        await action_token_model_1.ActionToken.deleteMany(params);
     }
 }
 exports.tokenRepository = new TokenRepository();

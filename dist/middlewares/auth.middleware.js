@@ -6,6 +6,8 @@ const api_error_1 = require("../errors/api-error");
 const token_repository_1 = require("../repositories/token.repository");
 const token_service_1 = require("../services/token.service");
 const status_codes_constant_1 = require("../constants/status-codes.constant");
+const action_token_type_enum_1 = require("../enums/action-token-type.enum");
+const action_token_repository_1 = require("../repositories/action-token.repository");
 class AuthMiddleware {
     async checkAccessToken(req, res, next) {
         try {
@@ -38,6 +40,26 @@ class AuthMiddleware {
             }
             req.res.locals.jwtPayload = payload;
             req.res.locals.tokenPair = tokenPair;
+            next();
+        }
+        catch (e) {
+            next(e);
+        }
+    }
+    async checkActionToken(req, res, next) {
+        try {
+            const actionToken = req.query.token;
+            if (!actionToken) {
+                throw new api_error_1.ApiError("No token provided", status_codes_constant_1.statusCodes.BAD_REQUEST);
+            }
+            const payload = token_service_1.tokenService.checkActionToken(actionToken, action_token_type_enum_1.ActionTokenTypeEnum.FORGOT);
+            const entity = await action_token_repository_1.actionTokenRepository.findByParams({
+                actionToken,
+            });
+            if (!entity) {
+                throw new api_error_1.ApiError("Invalid token", status_codes_constant_1.statusCodes.UNAUTHORIZED);
+            }
+            req.res.locals.jwtPayload = payload;
             next();
         }
         catch (e) {

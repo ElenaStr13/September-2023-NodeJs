@@ -5,7 +5,7 @@ export const emailTemplateConstant = {
         templateId: "d-ff9c4d120ab74f8988fb707674de3fef",
     },
     [EmailTypeEnum.RESET_PASSWORD]: {
-        templateId: "d-18c381a837104b13b6652f7f537a06b1",
+        templateId: "d-e19c821885b34afb98b9f4739514cd90",
     },
     [EmailTypeEnum.DELETE_ACCOUNT]: {
         templateId: "d-ff9c4d120ab74f8988fb707674de3fef",

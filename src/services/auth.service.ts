@@ -12,7 +12,8 @@ import {EmailTypeEnum} from "../enums/email-type.enum";
 import {errorMessages} from "../constants/error-messages.constant";
 import {statusCodes} from "../constants/status-codes.constant";
 import {ActionTokenTypeEnum} from "../enums/action-token-type.enum";
-import {IForgot} from "../interfaces/action-token.interface";
+import {IForgot, ISetForgot} from "../interfaces/action-token.interface";
+import {actionTokenRepository} from "../repositories/action-token.repository";
 
 
 
@@ -104,16 +105,43 @@ class AuthService {
             { userId: user._id, role: user.role },
             ActionTokenTypeEnum.FORGOT,
         );
-        // await actionTokenRepository.create({
-        //     tokenType: ActionTokenTypeEnum.FORGOT,
-        //     actionToken,
-        //     _userId: user._id,
-        // });
+        await actionTokenRepository.create({
+            tokenType: ActionTokenTypeEnum.FORGOT,
+            actionToken,
+            _userId: user._id,
+        });
         await sendGridService.sendByType(user.email, EmailTypeEnum.RESET_PASSWORD, {
             frontUrl: config.FRONT_URL,
             actionToken,
         });
     }
+
+    public async setForgotPassword(
+        dto: ISetForgot,
+        jwtPayload: IJWTPayload,
+    ): Promise<void> {
+        const user = await userRepository.getById(jwtPayload.userId);
+        const hashedPassword = await passwordService.hashPassword(dto.password);
+
+        await userRepository.updateById(user._id, { password: hashedPassword });
+        await actionTokenRepository.deleteByParams({
+            tokenType: ActionTokenTypeEnum.FORGOT,
+        });
+        await tokenRepository.deleteByParams({ _userId: user._id });
+    }
+
+    public async verify(jwtPayload: IJWTPayload): Promise<IUser> {
+        const [user] = await Promise.all([
+            userRepository.updateById(jwtPayload.userId, {
+                isVerified: true,
+            }),
+            actionTokenRepository.deleteByParams({
+                tokenType: ActionTokenTypeEnum.VERIFY,
+            }),
+        ]);
+        return user;
+    }
+
 
     private async isEmailExist(email: string): Promise<void> {
         const user = await userRepository.getByParams({ email });

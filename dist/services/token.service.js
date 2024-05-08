@@ -77,5 +77,23 @@ class TokenService {
             throw new api_error_1.ApiError("Token is not valid", status_codes_constant_1.statusCodes.UNAUTHORIZED);
         }
     }
+    checkActionToken(token, type) {
+        try {
+            let secret;
+            switch (type) {
+                case action_token_type_enum_1.ActionTokenTypeEnum.FORGOT:
+                    secret = config_1.config.JWT_ACTION_FORGOT_TOKEN_SECRET;
+                    break;
+                case action_token_type_enum_1.ActionTokenTypeEnum.VERIFY:
+                    break;
+                default:
+                    throw new api_error_1.ApiError("Invalid token type", status_codes_constant_1.statusCodes.INTERNAL_SERVER_ERROR);
+            }
+            return jsonwebtoken.verify(token, secret);
+        }
+        catch (error) {
+            throw new api_error_1.ApiError("Token is not valid", status_codes_constant_1.statusCodes.UNAUTHORIZED);
+        }
+    }
 }
 exports.tokenService = new TokenService();
