@@ -11,7 +11,6 @@ import { config } from "../configs/config";
 import {EmailTypeEnum} from "../enums/email-type.enum";
 import {errorMessages} from "../constants/error-messages.constant";
 import {statusCodes} from "../constants/status-codes.constant";
-import {smsService} from "./sms.service";
 import {ActionTokenTypeEnum} from "../enums/action-token-type.enum";
 import {IForgot} from "../interfaces/action-token.interface";
 
@@ -42,7 +41,7 @@ class AuthService {
             frontUrl: config.FRONT_URL,
             actionToken: "actionToken",
         });
-        await smsService.sendSms(user.phone, "<NAME>! Welcome to our app");
+        // await smsService.sendSms(user.phone, "<NAME>! Welcome to our app");
         return { user, tokens };
     }
 

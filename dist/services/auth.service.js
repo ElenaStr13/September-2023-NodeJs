@@ -11,7 +11,6 @@ const config_1 = require("../configs/config");
 const email_type_enum_1 = require("../enums/email-type.enum");
 const error_messages_constant_1 = require("../constants/error-messages.constant");
 const status_codes_constant_1 = require("../constants/status-codes.constant");
-const sms_service_1 = require("./sms.service");
 const action_token_type_enum_1 = require("../enums/action-token-type.enum");
 class AuthService {
     async signUp(dto) {
@@ -35,7 +34,6 @@ class AuthService {
             frontUrl: config_1.config.FRONT_URL,
             actionToken: "actionToken",
         });
-        await sms_service_1.smsService.sendSms(user.phone, "<NAME>! Welcome to our app");
         return { user, tokens };
     }
     async signIn(dto) {
