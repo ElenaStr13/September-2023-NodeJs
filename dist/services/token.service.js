@@ -45,19 +45,6 @@ class TokenService {
             refreshExpiresIn: config_1.config.JWT_REFRESH_EXPIRES_IN,
         };
     }
-    generateActionToken(payload, type) {
-        let secret;
-        let expiresIn;
-        switch (type) {
-            case action_token_type_enum_1.ActionTokenTypeEnum.FORGOT:
-                secret = config_1.config.JWT_ACTION_FORGOT_TOKEN_SECRET;
-                expiresIn = config_1.config.JWT_ACTION_FORGOT_EXPIRES_IN;
-                break;
-            default:
-                throw new api_error_1.ApiError("Invalid token type", status_codes_constant_1.statusCodes.INTERNAL_SERVER_ERROR);
-        }
-        return jsonwebtoken.sign(payload, secret, { expiresIn });
-    }
     checkToken(token, type) {
         try {
             let secret;
@@ -77,6 +64,23 @@ class TokenService {
             throw new api_error_1.ApiError("Token is not valid", status_codes_constant_1.statusCodes.UNAUTHORIZED);
         }
     }
+    generateActionToken(payload, type) {
+        let secret;
+        let expiresIn;
+        switch (type) {
+            case action_token_type_enum_1.ActionTokenTypeEnum.FORGOT:
+                secret = config_1.config.JWT_ACTION_FORGOT_TOKEN_SECRET;
+                expiresIn = config_1.config.JWT_ACTION_FORGOT_EXPIRES_IN;
+                break;
+            case action_token_type_enum_1.ActionTokenTypeEnum.VERIFY:
+                secret = config_1.config.JWT_ACTION_VERIFY_TOKEN_SECRET;
+                expiresIn = config_1.config.JWT_ACTION_VERIFY_EXPIRES_IN;
+                break;
+            default:
+                throw new api_error_1.ApiError("Invalid token type", status_codes_constant_1.statusCodes.INTERNAL_SERVER_ERROR);
+        }
+        return jsonwebtoken.sign(payload, secret, { expiresIn });
+    }
     checkActionToken(token, type) {
         try {
             let secret;
@@ -85,6 +89,7 @@ class TokenService {
                     secret = config_1.config.JWT_ACTION_FORGOT_TOKEN_SECRET;
                     break;
                 case action_token_type_enum_1.ActionTokenTypeEnum.VERIFY:
+                    secret = config_1.config.JWT_ACTION_VERIFY_TOKEN_SECRET;
                     break;
                 default:
                     throw new api_error_1.ApiError("Invalid token type", status_codes_constant_1.statusCodes.INTERNAL_SERVER_ERROR);

@@ -93,6 +93,17 @@ class AuthService {
         });
         await token_repository_1.tokenRepository.deleteByParams({ _userId: user._id });
     }
+    async verify(jwtPayload) {
+        const [user] = await Promise.all([
+            user_repository_1.userRepository.updateById(jwtPayload.userId, {
+                isVerified: true,
+            }),
+            action_token_repository_1.actionTokenRepository.deleteByParams({
+                tokenType: action_token_type_enum_1.ActionTokenTypeEnum.VERIFY,
+            }),
+        ]);
+        return user;
+    }
     async isEmailExist(email) {
         const user = await user_repository_1.userRepository.getByParams({ email });
         if (user) {

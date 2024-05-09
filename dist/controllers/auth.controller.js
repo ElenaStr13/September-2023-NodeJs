@@ -3,6 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.authController = void 0;
 const auth_service_1 = require("../services/auth.service");
 const auth_presenter_1 = require("../presenters/auth.presenter");
+const user_presenter_1 = require("../presenters/user.presenter");
+const status_codes_constant_1 = require("../constants/status-codes.constant");
 class AuthController {
     async signUp(req, res, next) {
         try {
@@ -52,6 +54,17 @@ class AuthController {
             const body = req.body;
             await auth_service_1.authService.setForgotPassword(body, jwtPayload);
             res.sendStatus(204);
+        }
+        catch (e) {
+            next(e);
+        }
+    }
+    async verify(req, res, next) {
+        try {
+            const jwtPayload = req.res.locals.jwtPayload;
+            const user = await auth_service_1.authService.verify(jwtPayload);
+            const response = user_presenter_1.UserPresenter.toPrivateResponseDto(user);
+            res.status(status_codes_constant_1.statusCodes.CREATED).json(response);
         }
         catch (e) {
             next(e);
