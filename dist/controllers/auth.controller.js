@@ -70,5 +70,16 @@ class AuthController {
             next(e);
         }
     }
+    async changePassword(req, res, next) {
+        try {
+            const jwtPayload = req.res.locals.jwtPayload;
+            const body = req.body;
+            await auth_service_1.authService.changePassword(jwtPayload, body);
+            res.sendStatus(status_codes_constant_1.statusCodes.NO_CONTENT);
+        }
+        catch (e) {
+            next(e);
+        }
+    }
 }
 exports.authController = new AuthController();

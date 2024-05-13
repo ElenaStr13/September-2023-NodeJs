@@ -104,6 +104,16 @@ class AuthService {
         ]);
         return user;
     }
+    async changePassword(jwtPayload, dto) {
+        const user = await user_repository_1.userRepository.getById(jwtPayload.userId);
+        const isCompare = await password_service_1.passwordService.comparePassword(dto.oldPassword, user.password);
+        if (!isCompare) {
+            throw new api_error_1.ApiError("Wrong old password", status_codes_constant_1.statusCodes.UNAUTHORIZED);
+        }
+        const hashedPassword = await password_service_1.passwordService.hashPassword(dto.newPassword);
+        await user_repository_1.userRepository.updateById(user._id, { password: hashedPassword });
+        await token_repository_1.tokenRepository.deleteByParams({ _userId: user._id });
+    }
     async isEmailExist(email) {
         const user = await user_repository_1.userRepository.getByParams({ email });
         if (user) {

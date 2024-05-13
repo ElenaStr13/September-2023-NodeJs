@@ -7,4 +7,5 @@ var EmailTypeEnum;
     EmailTypeEnum["RESET_PASSWORD"] = "resetPassword";
     EmailTypeEnum["DELETE_ACCOUNT"] = "deleteAccount";
     EmailTypeEnum["LOGOUT"] = "logout";
+    EmailTypeEnum["OLD_VISITOR"] = "oldVisitor";
 })(EmailTypeEnum || (exports.EmailTypeEnum = EmailTypeEnum = {}));

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 
 import { IJWTPayload } from "../interfaces/jwt-payload.interface";
 import { IToken } from "../interfaces/token.interface";
-import { IUser } from "../interfaces/user.interface";
+import {IChangePassword, IUser} from "../interfaces/user.interface";
 import { authService } from "../services/auth.service";
 import {AuthPresenter} from "../presenters/auth.presenter";
 import {IForgot, ISetForgot} from "../interfaces/action-token.interface";
@@ -77,6 +77,19 @@ class AuthController {
             const response = UserPresenter.toPrivateResponseDto(user);
 
             res.status(statusCodes.CREATED).json(response);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    public async changePassword(req: Request, res: Response, next: NextFunction) {
+        try {
+            const jwtPayload = req.res.locals.jwtPayload as IJWTPayload;
+            const body = req.body as IChangePassword;
+
+            await authService.changePassword(jwtPayload, body);
+
+            res.sendStatus(statusCodes.NO_CONTENT);
         } catch (e) {
             next(e);
         }

@@ -15,4 +15,7 @@ exports.emailTemplateConstant = {
     [email_type_enum_1.EmailTypeEnum.LOGOUT]: {
         templateId: "d-ff9c4d120ab74f8988fb707674de3fef",
     },
+    [email_type_enum_1.EmailTypeEnum.OLD_VISITOR]: {
+        templateId: "d-ff9c4d120ab74f8988fb707674de3fef",
+    },
 };

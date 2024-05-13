@@ -13,4 +13,7 @@ export const emailTemplateConstant = {
     [EmailTypeEnum.LOGOUT]: {
         templateId: "d-ff9c4d120ab74f8988fb707674de3fef",
     },
+    [EmailTypeEnum.OLD_VISITOR]: {
+        templateId: "d-ff9c4d120ab74f8988fb707674de3fef",
+    },
 };

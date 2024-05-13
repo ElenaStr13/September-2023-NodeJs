@@ -1,4 +1,3 @@
-
 import { ApiError } from "../errors/api-error";
 import { IUser } from "../interfaces/user.interface";
 import { userRepository } from "../repositories/user.repository";

@@ -14,4 +14,5 @@ router.post("/refresh", auth_middleware_1.authMiddleware.checkRefreshToken, auth
 router.post("/forgot-password", common_middleware_1.commonMiddleware.isBodyValid(user_validator_1.UserValidator.forgotPassword), auth_controller_1.authController.forgotPassword);
 router.put("/forgot-password", common_middleware_1.commonMiddleware.isBodyValid(user_validator_1.UserValidator.setForgotPassword), auth_middleware_1.authMiddleware.checkActionToken(action_token_type_enum_1.ActionTokenTypeEnum.FORGOT), auth_controller_1.authController.setForgotPassword);
 router.put("/verify", auth_middleware_1.authMiddleware.checkActionToken(action_token_type_enum_1.ActionTokenTypeEnum.VERIFY), auth_controller_1.authController.verify);
+router.patch("/change-password", common_middleware_1.commonMiddleware.isBodyValid(user_validator_1.UserValidator.changePassword), auth_middleware_1.authMiddleware.checkAccessToken, auth_controller_1.authController.changePassword);
 exports.authRouter = router;
