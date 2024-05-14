@@ -13,6 +13,7 @@ const userSchema = new mongoose_1.default.Schema({
     password: { type: String, required: true },
     age: { type: Number, required: false },
     role: { type: String, enum: role_enum_1.RoleEnum, default: role_enum_1.RoleEnum.USER },
+    avatar: { type: String, required: false },
     isDeleted: { type: Boolean, default: false },
     isVerified: { type: Boolean, default: false },
 }, {

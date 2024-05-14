@@ -1,4 +1,5 @@
 import express, { NextFunction, Request, Response } from "express";
+import fileupload from "express-fileupload";
 import mongoose from "mongoose";
 
 import { config } from "./configs/config";
@@ -13,6 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
+app.use(fileupload());
 
 app.use(
     "*",

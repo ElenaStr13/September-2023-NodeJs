@@ -68,5 +68,17 @@ class UserController {
             next(e);
         }
     }
+    async uploadAvatar(req, res, next) {
+        try {
+            const jwtPayload = req.res.locals.jwtPayload;
+            const avatar = req.files?.avatar;
+            const user = await user_service_1.userService.uploadAvatar(jwtPayload.userId, avatar);
+            const response = user_presenter_1.UserPresenter.toPrivateResponseDto(user);
+            res.status(201).json(response);
+        }
+        catch (e) {
+            next(e);
+        }
+    }
 }
 exports.userController = new UserController();
