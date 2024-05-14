@@ -4,6 +4,7 @@ import { userController } from "../controllers/user.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { commonMiddleware } from "../middlewares/common.middleware";
 import { UserValidator } from "../validators/user.validator";
+import {fileMiddleware} from "../middlewares/file.middleware";
 
 
 
@@ -23,8 +24,14 @@ router.delete("/me", authMiddleware.checkAccessToken, userController.deleteMe);
 router.post(
     "/me/avatar",
     authMiddleware.checkAccessToken,
-    //fileMiddleware.isAvatarValid,
+    fileMiddleware.isAvatarValid,
     userController.uploadAvatar,
+);
+
+router.delete(
+    "/me/avatar",
+    authMiddleware.checkAccessToken,
+    userController.deleteAvatar,
 );
 
 router.get("/:userId", commonMiddleware.isIdValid, userController.getById);

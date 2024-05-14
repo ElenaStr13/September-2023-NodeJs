@@ -31,8 +31,16 @@ class UserService {
         const user = await this.findUserOrThrow(userId);
         const filePath = await s3_service_1.s3Service.uploadFile(avatar, file_item_type_enum_1.FileItemTypeEnum.USER, user._id);
         if (user.avatar) {
+            await s3_service_1.s3Service.deleteFile(user.avatar);
         }
         return await user_repository_1.userRepository.updateById(userId, { avatar: filePath });
+    }
+    async deleteAvatar(userId) {
+        const user = await this.findUserOrThrow(userId);
+        if (user.avatar) {
+            await s3_service_1.s3Service.deleteFile(user.avatar);
+        }
+        return await user_repository_1.userRepository.updateById(userId, { avatar: null });
     }
     async findUserOrThrow(userId) {
         const user = await user_repository_1.userRepository.getById(userId);
