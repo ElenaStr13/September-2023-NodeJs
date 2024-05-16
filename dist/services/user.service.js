@@ -6,8 +6,8 @@ const user_repository_1 = require("../repositories/user.repository");
 const s3_service_1 = require("./s3.service");
 const file_item_type_enum_1 = require("../enums/file-item-type.enum");
 class UserService {
-    async getList() {
-        return await user_repository_1.userRepository.getList();
+    async getList(query) {
+        return await user_repository_1.userRepository.getList(query);
     }
     async getById(userId) {
         return await this.findUserOrThrow(userId);

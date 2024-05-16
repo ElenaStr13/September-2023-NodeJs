@@ -6,8 +6,9 @@ const user_presenter_1 = require("../presenters/user.presenter");
 class UserController {
     async getList(req, res, next) {
         try {
-            const users = await user_service_1.userService.getList();
-            const response = user_presenter_1.UserPresenter.toPublicResponseListDto(users);
+            const query = req.query;
+            const [users, total] = await user_service_1.userService.getList(query);
+            const response = user_presenter_1.UserPresenter.toPublicResponseListDto(users, query, total);
             res.json(response);
         }
         catch (e) {

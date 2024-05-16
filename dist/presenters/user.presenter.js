@@ -15,8 +15,12 @@ class UserPresenter {
             isVerified: user.isVerified,
         };
     }
-    static toPublicResponseListDto(users) {
-        return users.map(UserPresenter.toPublicResponseDto);
+    static toPublicResponseListDto(users, query, total) {
+        return {
+            data: users.map(UserPresenter.toPublicResponseDto),
+            ...query,
+            total,
+        };
     }
     static toPrivateResponseDto(user) {
         return {

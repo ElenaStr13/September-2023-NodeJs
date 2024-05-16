@@ -1,11 +1,13 @@
 import express, { NextFunction, Request, Response } from "express";
 import fileupload from "express-fileupload";
 import mongoose from "mongoose";
+import swaggerUi from "swagger-ui-express";
 
 import { config } from "./configs/config";
 import { ApiError } from "./errors/api-error";
 import { userRouter } from "./routers/user.router";
 import {authRouter} from "./routers/auth.router";
+import swaggerDocument from "../docs/swagger.json";
 
 const app = express();
 
@@ -15,6 +17,7 @@ app.use(fileupload());
 
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(
     "*",
